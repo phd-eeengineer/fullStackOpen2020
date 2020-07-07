@@ -8,16 +8,20 @@ const Header = ({ course }) => {
 }
 
 const Total = ({ course }) => {
-  let sum = 0
 
-  course.parts.forEach(part => 
-    {   
-      sum += part.exercises
-      console.log(sum)
-    })
+  const total = course.parts
+      .reduce((sum, part) => sum + part.exercises, 0)
 
+  /*
+  const total = course.parts
+      .map(part => part.exercises)
+      .reduce((sum, exercise) => {        
+        return sum + exercise
+  })
+  */
+  
   return(
-    <p><b>Total of {sum} exercises</b></p>
+    <p><b>Total of {total} exercises</b></p>
   ) 
 }
 
@@ -31,7 +35,6 @@ const Part = (props) => {
 
 const Content = ({ course }) => {
   const myArray = course.parts
-  console.log(myArray)
   
   return (
     myArray.map((part, i) => 
