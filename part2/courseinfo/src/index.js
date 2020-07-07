@@ -8,17 +8,24 @@ const Header = ({ course }) => {
 }
 
 const Total = ({ course }) => {
-  const sum = course.parts[0].exercises + course.parts[1].exercises + course.parts[2].exercises
+  let sum = 0
+
+  course.parts.forEach(part => 
+    {   
+      sum += part.exercises
+      console.log(sum)
+    })
+
   return(
-    <div>Number of exercises {sum}</div>
+    <p><b>Total of {sum} exercises</b></p>
   ) 
 }
 
 const Part = (props) => {
   return (
-    <div>
+    <p>
       {props.part.name} {props.part.exercises}
-    </div>    
+    </p>    
   )
 }
 
@@ -35,19 +42,15 @@ const Content = ({ course }) => {
   )
 }
 
-
-
 const Course = ({course}) => {  
   return (
     <div>
       <Header course={course} />
       <Content course={course} />
+      <Total course={course} />
     </div>
   )
 }
-
-//<Total course={course} />
-//<Part part={part}/>
 
 const App = () => {
   const course = {
