@@ -1,23 +1,33 @@
 import React, { useState } from 'react'
 
 const App = () => {
+  const [ newName, setNewName ] = useState('')
   const [ persons, setPersons ] = useState([
     { name: 'Arto Hellas' }
   ]) 
-  const [ newName, setNewName ] = useState('')
+  
 
   const addPerson = (event) => {
     event.preventDefault()
-    const personObject = {
-      name: newName
-    }
-  
-    setPersons(persons.concat(personObject))
-    setNewName('')
+    let isFound = 0
+
+    persons.forEach((person) => person.name === newName ? isFound++ : isFound)
+    console.log("Console 1:", isFound)
+    
+    if( isFound > 0 ) {
+      window.alert(`${newName} is already added to phonebook`)
+    } else {
+      const personObject = {
+        name: newName
+      }      
+      setPersons(persons.concat(personObject))   
+      
+    } 
+    setNewName('')      
   }
 
   const handleAddButton = (event) => {
-    console.log(event.target.value)
+    //console.log(event.target.value)
     setNewName(event.target.value)
   }
 
@@ -40,6 +50,7 @@ const App = () => {
           <div key={person.name}> {person.name} </div>
         )}
       </div>
+        <div> debug: {}</div>
     </div>
   )
 }
