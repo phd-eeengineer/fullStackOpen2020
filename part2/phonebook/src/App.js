@@ -10,12 +10,13 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
-    let isFound = 0
 
-    persons.forEach((person) => person.name === newName ? isFound++ : isFound)
-    console.log("Console 1:", isFound)
+    // let isFound = 0
+    // persons.forEach((person) => person.name === newName ? isFound++ : isFound)
+    // console.log("Console 1:", isFound)
+
     
-    if( isFound > 0 ) {
+    if(persons.some(person => person.name === newName)) {
       window.alert(`${newName} is already added to phonebook`)
     } else {
       const personObject = {
