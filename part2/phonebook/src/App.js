@@ -3,18 +3,16 @@ import React, { useState } from 'react'
 const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
-  const [ persons, setPersons ] = useState([
-    { name: 'Arto Hellas', number: "040-1234567"}
+  const [ searchResult, setSearchResult ] = useState('')
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas', number: '040-123456' },
+    { name: 'Ada Lovelace', number: '39-44-5323523' },
+    { name: 'Dan Abramov', number: '12-43-234345' },
+    { name: 'Mary Poppendieck', number: '39-23-6423122' }
   ]) 
-  
 
   const addPerson = (event) => {
     event.preventDefault()
-
-    // let isFound = 0
-    // persons.forEach((person) => person.name === newName ? isFound++ : isFound)
-    // console.log("Console 1:", isFound)
-
     
     if(persons.some(person => person.name === newName)) {
       window.alert(`${newName} is already added to phonebook`)
@@ -39,9 +37,33 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
+  const handleSearch = (event) => {
+  //  console.log(event.target.value)
+    setSearchResult(event.target.value)
+  }
+
+  const personsToShow = (searchResult === '')
+  ? persons
+  : persons.filter(person => person.name
+        .toLowerCase().includes(searchResult.toLowerCase()))
+
+  // console.log("searched: ", searchResult)
+  // console.log("liste: ", personsToShow)
+
+
   return (
     <div>
       <h2>Phonebook</h2>
+      <div>
+        Filter shown with 
+        <input 
+          value={searchResult}
+          onChange = {handleSearch}/>
+          <div>debug: {searchResult}</div>
+      </div>
+      <div>
+        <h2>Add a new</h2>
+      </div>
       <form onSubmit={addPerson}>
         <div>
           name: <input 
@@ -59,7 +81,7 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <div>
-        {persons.map( person => 
+        {personsToShow.map( person => 
           <div key={person.name}> {person.name} {person.number} </div>
         )}
       </div>
