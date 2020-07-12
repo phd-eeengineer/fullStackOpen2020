@@ -3,12 +3,13 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import Filter from './components/Filter'
 import Country from './components/Country';
+import CountryDetail from './components/CountryDetail';
 
 
 function App() {
   const [ countries, setCountires ] = useState('')
-//  const [ search, setSearch ] = useState('')
-  const [ searchResult, setSearchResult ] = useState('')
+  const [ search, setSearch ] = useState('')
+  
 
   useEffect(() => {
     //console.log('effect')
@@ -22,22 +23,37 @@ function App() {
 
   const handleSearch = (event) => {
   //  console.log(event.target.value)
-  setSearchResult(event.target.value)
+  setSearch(event.target.value)
   }
 
+  let countriesToShow = ''
+
+  if(countries.length > 0) {
+    countriesToShow = countries
+      .filter(country => country.name
+      .toLowerCase()
+      .includes(search.toLowerCase()))
+  }
 
   return (
     <div>
-      <div>
-        <Filter searchResult = {searchResult}
-              handleSearch = {handleSearch}/>
-      </div>
-        < Country countries = {countries}
-          searchResult = {searchResult}
-        />
-      <div>
-          
-      </div>      
+      < Filter search = {search}
+               handleSearch = {handleSearch} />
+
+      {
+        countriesToShow.length < 10 && countriesToShow.length > 1 
+        ? countriesToShow.map((country, i) => 
+                < Country country = {country} key = {i} setSearch = {setSearch}/>)
+        : ''
+      }
+
+      {
+        countriesToShow.length === 1 
+        ? < CountryDetail country = {countriesToShow[0]}/>
+        : ''
+      }
+
+           
     </div>
   );
 }
