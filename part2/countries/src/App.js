@@ -3,13 +3,17 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import Filter from './components/Filter'
 import Country from './components/Country';
+import Weather from './components/Weather';
 import CountryDetail from './components/CountryDetail';
 
 
 function App() {
   const [ countries, setCountires ] = useState('')
   const [ search, setSearch ] = useState('')
-  
+  const [ capital, setCapital] = useState('')
+  //const [weather, setWeather] = useState('')
+
+
 
   useEffect(() => {
     //console.log('effect')
@@ -24,6 +28,7 @@ function App() {
   const handleSearch = (event) => {
   //  console.log(event.target.value)
   setSearch(event.target.value)
+  setCapital('')
   }
 
   let countriesToShow = ''
@@ -34,6 +39,23 @@ function App() {
       .toLowerCase()
       .includes(search.toLowerCase()))
   }
+
+  console.log("inApp-Capital:", capital)
+
+  // const api_key = process.env.REACT_APP_API_KEY
+
+  // useEffect(() => {
+  //   let counter = 0
+  //   while(weather.current === undefined && counter < 5)
+  //   axios
+  //     .get('http://api.weatherstack.com/current?access_key='+api_key+'&query='+capital)
+  //     .then(response => {
+
+  //     setWeather(response.data)
+  //     })
+
+  //     console.log("inApp-axios-weather", weather)
+  // }, [capital])
 
   return (
     <div>
@@ -49,11 +71,18 @@ function App() {
 
       {
         countriesToShow.length === 1 
-        ? < CountryDetail country = {countriesToShow[0]}/>
+        ? < CountryDetail country = {countriesToShow[0]} 
+                          setCapital = {setCapital}/>
         : ''
       }
 
+      {
+        capital ===''
+        ? ''
+        : < Weather capital = {capital} 
+            />
            
+      }           
     </div>
   );
 }

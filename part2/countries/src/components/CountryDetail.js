@@ -1,6 +1,9 @@
 import React from 'react'
 
-const CountryDetail = ({country}) => {
+const CountryDetail = ({country, setCapital}) => {
+
+  setCapital(country.capital)
+
     return (
         <div>
           <h2> {country.name}</h2>
