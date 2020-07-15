@@ -8,7 +8,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ searchResult, setSearchResult ] = useState('')
-  const [persons, setPersons] = useState([]) 
+  const [ persons, setPersons ] = useState([]) 
 
   useEffect(() => {
     //console.log('effect')
@@ -31,11 +31,17 @@ const App = () => {
       const personObject = {
         name: newName,
         number: newNumber
-      }      
-      setPersons(persons.concat(personObject))  
+      }
+      axios    
+        .post('http://localhost:3001/persons', personObject)    
+        .then(response => { 
+          setPersons(persons.concat(response.data))
+          setNewName('')
+          setNewNumber('')
+          console.log(response)
+        })  
     } 
-    setNewName('')
-    setNewNumber('')    
+       
   }
 
   const handleName = (event) => {
