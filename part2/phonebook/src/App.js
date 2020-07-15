@@ -2,21 +2,20 @@ import React, { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
-import axios from 'axios'
+import personService from './services/person'
 
 const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ searchResult, setSearchResult ] = useState('')
-  const [ persons, setPersons ] = useState([]) 
+  const [ persons, setPersons ] = useState([])
+  
 
   useEffect(() => {
-    //console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-      //  console.log('promise fulfilled')
-        setPersons(response.data)
+    personService
+      .getAll()
+      .then(initalData => {
+        setPersons(initalData)
       })
   }, [])
 
@@ -32,13 +31,13 @@ const App = () => {
         name: newName,
         number: newNumber
       }
-      axios    
-        .post('http://localhost:3001/persons', personObject)    
-        .then(response => { 
-          setPersons(persons.concat(response.data))
+      personService
+        .create(personObject)    
+        .then(responseData => { 
+          setPersons(persons.concat(responseData))
           setNewName('')
           setNewNumber('')
-          console.log(response)
+          console.log(responseData)
         })  
     } 
        
