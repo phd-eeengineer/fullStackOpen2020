@@ -16,19 +16,14 @@
       "id": 3
     },
     {
-      "name": "Mary Poppendieck",
-      "number": "39-23-6423122",
-      "id": 4
-    },
-    {
-      "name": "Julia Nova",
-      "number": "123-234 34 45",
-      "id": 8
-    },
-    {
-      "name": "Mary Moskova",
-      "number": "09090909090",
+      "name": "Maria Mat",
+      "number": "111- 232 33 44",
       "id": 9
+    },
+    {
+      "name": "Julia Bor",
+      "number": "111 333 44 55",
+      "id": 10
     }
   ]
 }

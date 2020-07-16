@@ -9,7 +9,8 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ searchResult, setSearchResult ] = useState('')
   const [ persons, setPersons ] = useState([])
-  const [ message, setMessage ] = useState(null)
+  const [ successMessage, setSuccessMessage ] = useState(null)
+  const [ errorMessage, setErrorMessage ] = useState(null)
   
 
   useEffect(() => {
@@ -43,7 +44,9 @@ const App = () => {
           .catch(error => {
             if (error.response) {
               console.log("Add Person: ", error.response.data)
-            } 
+            }
+            setErrorMessage(`Information of ${changedPerson.name} has already been removed from the server`)
+            setTimeout(() => {setErrorMessage(null)}, 5000)
          }) 
       }
     } else {
@@ -56,13 +59,17 @@ const App = () => {
         .create(personObject)    
         .then(responseData => { 
           setPersons(persons.concat(responseData))
-          setMessage(`Added ${newName}`)
-          console.log("mes: ",message)
-          setTimeout(() => {setMessage(null)}, 3000)
+          setSuccessMessage(`Added ${newName}`)
+          setTimeout(() => {setSuccessMessage(null)}, 3000)
           setNewName('')
           setNewNumber('')
           console.log(responseData)
-        })  
+        })
+        .catch(error => {
+          if (error.response) {
+            console.log("Add Person: ", error.response.data)
+          } 
+       }) 
     }        
   }
 
@@ -99,18 +106,31 @@ const App = () => {
     if (message === null) {
       return null
     }
-  
-    return (
-      <div className="succes">
-        {message}
-      </div>
-    )
+    
+    if(successMessage !== null){
+      return (
+        <div className="succes">
+          {successMessage}
+        </div>
+      )
+    }
+
+    if(errorMessage !== null){
+      return (
+        <div className="error">
+          {errorMessage}
+        </div>
+      )
+    }
+    
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={message} />
+      <Notification message={successMessage}/>
+      <Notification message={errorMessage}/>
+      
       <Filter searchResult = {searchResult}
               handleSearch = {handleSearch}/>
 
