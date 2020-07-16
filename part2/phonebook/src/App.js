@@ -24,8 +24,26 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
     
-    if(persons.some(person => person.name === newName)) {
-      window.alert(`${newName} is already added to phonebook`)
+    if(persons.some(person => person.name === newName.trim())) {
+      if(window.confirm(`${newName} is already added to phonebook, 
+      replace the old number with a new one?`)){
+        const foundPerson = persons.find(p => p.name === newName.trim())
+        const changedPerson = { ...foundPerson, number: newNumber }
+
+        personService
+          .update(foundPerson.id, changedPerson)
+          .then(response => {        
+            setPersons(persons.map(p => 
+              p.name !== changedPerson.name ? p : response))
+            setNewName('')
+            setNewNumber('')    
+          })
+          .catch(error => {
+            if (error.response) {
+              console.log("Add Person: ", error.response.data)
+            } 
+         }) 
+      }
     } else {
       const personObject = {
         name: newName,
@@ -39,23 +57,36 @@ const App = () => {
           setNewNumber('')
           console.log(responseData)
         })  
-    } 
-       
+    }        
   }
 
   const handleName = (event) => {
-    //console.log(event.target.value)
     setNewName(event.target.value)
   }
 
   const handleNumber = (event) => {
-    //console.log(event.target.value)
     setNewNumber(event.target.value)
   }
 
   const handleSearch = (event) => {
-  //  console.log(event.target.value)
     setSearchResult(event.target.value)
+  }
+
+  const deletePerson = (id) => {
+    const personToDelete = persons.find(person => person.id === id)
+    if (window.confirm(`Delete ${personToDelete.name}?`)){
+      personService
+        .deleteObject(personToDelete.id)
+        .then(response => {
+          setPersons(persons.filter(p => p.id !== id))
+          console.log("2 - ",response)
+        })
+        .catch(error => {
+           if (error.response) {
+             console.log("3 - ",error.response.data)
+           } 
+        }) 
+    }
   }
 
   return (
@@ -79,8 +110,8 @@ const App = () => {
       <h2>Numbers</h2>
 
       <Persons persons = {persons}
-          searchResult = {searchResult}/>
-
+          searchResult = {searchResult}
+          deletePerson = {deletePerson}/>
     </div>
   )
 }

@@ -6,11 +6,16 @@ const Persons = (props) => {
         ? props.persons
         : props.persons.filter(person => person.name
                 .toLowerCase().includes(props.searchResult.toLowerCase()))
-
+        
     return (
         <div>
-            {personsToShow.map( person => 
-                <div key={person.name}> {person.name} {person.number} </div>
+            {personsToShow.map(person => 
+                <div key = {person.id}> 
+                    {person.name} {person.number} 
+                    <button key = {person.id} onClick = {() => props.deletePerson(person.id)}>
+                        delete
+                    </button>
+                </div>
             )}
         </div>
     )
