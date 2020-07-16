@@ -9,6 +9,7 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ searchResult, setSearchResult ] = useState('')
   const [ persons, setPersons ] = useState([])
+  const [ message, setMessage ] = useState(null)
   
 
   useEffect(() => {
@@ -30,6 +31,7 @@ const App = () => {
         const foundPerson = persons.find(p => p.name === newName.trim())
         const changedPerson = { ...foundPerson, number: newNumber }
 
+        // Revising the record
         personService
           .update(foundPerson.id, changedPerson)
           .then(response => {        
@@ -49,10 +51,14 @@ const App = () => {
         name: newName,
         number: newNumber
       }
+      // Creating new record
       personService
         .create(personObject)    
         .then(responseData => { 
           setPersons(persons.concat(responseData))
+          setMessage(`Added ${newName}`)
+          console.log("mes: ",message)
+          setTimeout(() => {setMessage(null)}, 3000)
           setNewName('')
           setNewNumber('')
           console.log(responseData)
@@ -89,10 +95,22 @@ const App = () => {
     }
   }
 
+  const Notification = ({ message }) => {
+    if (message === null) {
+      return null
+    }
+  
+    return (
+      <div className="succes">
+        {message}
+      </div>
+    )
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
-
+      <Notification message={message} />
       <Filter searchResult = {searchResult}
               handleSearch = {handleSearch}/>
 
