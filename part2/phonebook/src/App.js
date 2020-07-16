@@ -9,8 +9,8 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ searchResult, setSearchResult ] = useState('')
   const [ persons, setPersons ] = useState([])
-  const [ successMessage, setSuccessMessage ] = useState(null)
-  const [ errorMessage, setErrorMessage ] = useState(null)
+  const [ message, setMessage ] = useState(null)
+
   
 
   useEffect(() => {
@@ -45,8 +45,11 @@ const App = () => {
             if (error.response) {
               console.log("Add Person: ", error.response.data)
             }
-            setErrorMessage(`Information of ${changedPerson.name} has already been removed from the server`)
-            setTimeout(() => {setErrorMessage(null)}, 5000)
+            setMessage({
+              text: `Information of ${changedPerson.name} has already been removed from the server`,
+              type: "error"
+            })
+            setTimeout(() => {setMessage(null)}, 5000)
          }) 
       }
     } else {
@@ -59,8 +62,11 @@ const App = () => {
         .create(personObject)    
         .then(responseData => { 
           setPersons(persons.concat(responseData))
-          setSuccessMessage(`Added ${newName}`)
-          setTimeout(() => {setSuccessMessage(null)}, 3000)
+          setMessage({
+            text: `Added ${newName}`,
+            type: "success"
+          })
+          setTimeout(() => {setMessage(null)}, 3000)
           setNewName('')
           setNewNumber('')
           console.log(responseData)
@@ -106,31 +112,19 @@ const App = () => {
     if (message === null) {
       return null
     }
-    
-    if(successMessage !== null){
-      return (
-        <div className="succes">
-          {successMessage}
-        </div>
-      )
-    }
 
-    if(errorMessage !== null){
-      return (
-        <div className="error">
-          {errorMessage}
-        </div>
-      )
-    }
-    
+    return (
+      <div className= {message.type} >
+        {message.text}
+      </div>
+    )  
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={successMessage}/>
-      <Notification message={errorMessage}/>
-      
+      <Notification message={message}/>
+
       <Filter searchResult = {searchResult}
               handleSearch = {handleSearch}/>
 
