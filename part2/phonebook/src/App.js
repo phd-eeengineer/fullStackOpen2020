@@ -12,7 +12,6 @@ const App = () => {
   const [ message, setMessage ] = useState(null)
 
   
-
   useEffect(() => {
     personService
       .getAll()
@@ -21,7 +20,7 @@ const App = () => {
       })
   }, [])
 
-  // console.log('render', persons.length, 'persons')
+  console.log('render', persons.length, 'persons')
 
   const addPerson = (event) => {
     event.preventDefault()
