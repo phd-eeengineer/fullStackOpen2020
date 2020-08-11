@@ -73,7 +73,12 @@ const App = () => {
         .catch(error => {
           if (error.response) {
             console.log("Add Person: ", error.response.data)
-          } 
+          }
+          setMessage({
+            text: `${error.response.data.error}`,
+            type: "error"
+          })
+          setTimeout(() => {setMessage(null)}, 10000)
        }) 
     }        
   }
