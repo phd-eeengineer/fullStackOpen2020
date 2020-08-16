@@ -9,26 +9,25 @@ blogsRouter.get('/', (request, response) => {
     })
 })
   
-blogsRouter.post('/', (request, response) => {
+blogsRouter.post('/', async (request, response) => {
     const body = request.body
 
     const blog = new Blog({
         title: body.title,
         author: body.author,
         url: body.url,
-        likes: body.likes === undefined ? 0 : body.likes
+        likes: body.likes || 0
       })
-  
-    console.log("POST req",blog.hasOwnProperty('title')) 
-      // ? blog.save().then(result => {
-      //   response.status(201).json(result)})
-      // : response.status(400).error('Bad Request')
 
-      blog
-        .save()
-        .then(result => {
-          response.status(201).json(result)
-        })
+    const savedBlog = await blog.save()
+    
+    response.status(200).json(savedBlog)
 })
 
-  module.exports = blogsRouter
+blogsRouter.delete('/:id', async (request, response) => {
+  await Blog.findByIdAndRemove(request.params.id)
+  response.status(204).end()
+})
+
+
+module.exports = blogsRouter
