@@ -1,10 +1,11 @@
 POST http://localhost:3003/api/blogs HTTP/1.1
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Imt1bGxhbmljaTEiLCJpZCI6IjVmNDE4MjM5ZTY5Mjk4MDQ4MGY1MjIwZiIsImlhdCI6MTU5ODEzMTc4OX0.3TR5WNjm-eLZGaHotujc9E0pAy4GY2WUu7ybXkCB7Ow
 
 {
-  "title": "React patterns",
-  "author": "Michael Chan",
-  "url": "https://reactpatterns.com/",
-  "likes": "7",
+  "title": "First class tests", 
+  "author": "Robert C. Martin", 
+  "url": "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll", 
+  "likes": "10",
   "userId": "5f41059b9670b73e3ca3dd76"
 }
