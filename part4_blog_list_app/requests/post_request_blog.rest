@@ -2,8 +2,9 @@ POST http://localhost:3003/api/blogs HTTP/1.1
 Content-Type: application/json
 
 {
-  "title": "Hey! Man",
-  "author": "V",
-  "url": "https://flutterdersleri.com/",
-  "likes": "20"
+  "title":"Go To Statement Considered Harmful",
+  "author":"Edsger W. Dijkstra",
+  "url":"http://www.u.arizona.edu",
+  "likes":"5",
+  "userId": "5f41059b9670b73e3ca3dd76"
 }
