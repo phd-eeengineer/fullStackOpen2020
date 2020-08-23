@@ -15,6 +15,7 @@ describe('only blog router tests', () => {
   
     const blogObjects = helper.initialBlogs
       .map(blog => new Blog(blog))
+      
     const promiseArray = blogObjects.map(blog => blog.save())
     await Promise.all(promiseArray)
   })
@@ -39,8 +40,10 @@ describe('only blog router tests', () => {
   })
   
   test('a valid blog can be added', async () => {
+    const token = process.env.TOKEN
+
     const newBlog = {
-      title: 'This is added',
+      title: 'Test blog',
       author: 'Edsger W. Dijkstra',
       url: 'http://www.u.arizona.edu',
       likes: 5,
@@ -49,18 +52,19 @@ describe('only blog router tests', () => {
     await api
       .post('/api/blogs')
       .send(newBlog)
+      .set('Authorization', `bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
   
     const response = await api.get('/api/blogs')
   
     const titles =  response.body.map(n => n.title)
-    expect(titles).toContain(
-      'This is added'
-    )
+    expect(titles).toContain('Test blog')
   })
   
   test('a blog without like property is added', async () => {
+    const token = process.env.TOKEN
+
     const newBlog = {
       title: 'A blog like property',
       author: 'Edsger W. Dijkstra',
@@ -70,6 +74,7 @@ describe('only blog router tests', () => {
     await api
       .post('/api/blogs')
       .send(newBlog)
+      .set('Authorization', `bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
   
@@ -82,6 +87,8 @@ describe('only blog router tests', () => {
   })
   
   test('blog without title and url properties is not added', async () => {
+    const token = process.env.TOKEN
+
     const newBlog = { 
       author: "Robert C. Martin", 
       likes: 3
@@ -90,19 +97,40 @@ describe('only blog router tests', () => {
     await api
       .post('/api/blogs')
       .send(newBlog)
+      .set('Authorization', `bearer ${token}`)
       .expect(400)
     
       const blogsAtEnd = await helper.blogsInDb()
   
       expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
   })
+
+  test('adding a blog fails without autorization token', async () => {
+
+    const newBlog = { 
+      author: "Robert C. Martin", 
+      likes: 3
+    }
   
-  test('succeeds with status code 204 if id is valid', async () => {
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+    
+      const blogsAtEnd = await helper.blogsInDb()
+  
+      expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+  })
+  
+  test('delete request succeeds with status code 204 if id is valid', async () => {
+    const token = process.env.TOKEN
+
     const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
   
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `bearer ${token}`)
       .expect(204)
   
     const blogsAtEnd = await helper.blogsInDb()

@@ -28,6 +28,12 @@ const initialBlogs = [
   }
 ]
 
+const initialUser = {
+  username: 'root',
+  name: 'Super User',
+  password: 'root',
+}
+
 const nonExistingId = async () => {
   const blog = new Blog({ title: 'willremovethissoon' })
   await blog.save()
