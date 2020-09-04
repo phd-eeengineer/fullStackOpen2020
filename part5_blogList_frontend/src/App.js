@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -11,6 +11,8 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
+
+  // const blogLikesRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -128,6 +130,26 @@ const App = () => {
     </Togglable>
   )
 
+  const handleLikesOf = (id) => {
+    const blog = blogs.find(n => n.id === id)
+    blog.likes+=1
+    const changedBlog = { ...blog, likes: blog.likes }
+  
+    blogService
+      .update(id, changedBlog)
+      .then(returnedBlog => {
+        setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+      })
+      .catch(error => {
+        setMessage(
+          `Error occured. Blog '${blog.title}' likes cannot be changed.`
+        )
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)     
+      })
+  }
+
   return (
     <div>
       {user === null ? loginForm() :
@@ -146,7 +168,7 @@ const App = () => {
               <Blog 
                 key={blog.id} 
                 blog={blog}
-                viewDetail = {() => {}} />
+                handleLikes = {() => handleLikesOf(blog.id)} />
             )}
           </div>
         </div>

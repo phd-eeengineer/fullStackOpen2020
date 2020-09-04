@@ -18,6 +18,8 @@ const Blog = (props) => {
     setVisible(!visible)
   }
 
+
+
   return (
     <div>
       <div style={hide}>
@@ -32,7 +34,7 @@ const Blog = (props) => {
           <button onClick={toggleVisibility}> hide </button></div>
           <div>{props.blog.url}</div>
           <div>likes {props.blog.likes}
-          <button onClick={() => {}}> like </button></div>
+          <button onClick={props.handleLikes}> like </button></div>
           <div>{props.blog.name}</div>
         </div>
       </div>
