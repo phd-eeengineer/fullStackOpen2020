@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -12,13 +12,17 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
 
-  // const blogLikesRef = useRef()
-
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+    blogService
+      .getAll()
+      .then(blogs =>  setBlogs( blogs )
     )  
-  }, []) // boş liste olarak verilirse sadece ilk çalışmada burası çalışr
+  }, []) // boş liste olarak verilirse sadece ilk çalışmada burası çalışır
+
+  // to sort the blogs according to like values
+  blogs.sort(function(a,b){
+    return a.likes-b.likes;
+  })
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
