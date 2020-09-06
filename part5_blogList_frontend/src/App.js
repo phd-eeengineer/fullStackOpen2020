@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -12,16 +12,19 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [message, setMessage] = useState(null)
 
+  const blogFormRef = useRef()
+
   useEffect(() => {
     blogService
       .getAll()
       .then(blogs =>  setBlogs( blogs )
     )  
   }, []) // boş liste olarak verilirse sadece ilk çalışmada burası çalışır
+  
 
   // to sort the blogs according to like values
   blogs.sort(function(a,b){
-    return a.likes-b.likes;
+    return b.likes-a.likes;
   })
 
   useEffect(() => {
@@ -91,7 +94,8 @@ const App = () => {
   )
 
   const addBlog = (blogObject) => {
-  
+    blogFormRef.current.toggleVisibility()
+
     blogService
       .create(blogObject)
       .then(returnedBlog => {
@@ -104,7 +108,7 @@ const App = () => {
       })
       .catch(error => {
         setMessage({
-          test: `${error.response.data.error}`,
+          text: `${error.response.data.error}`,
           type: "error"
         })
         setTimeout(() => { setMessage(null) }, 5000)
@@ -129,29 +133,59 @@ const App = () => {
   }
 
   const blogForm = () => (
-    <Togglable buttonLabel="create new blog" >
+    <Togglable buttonLabel="create new blog" ref={blogFormRef}>
       <BlogForm createBlog={addBlog}/>
     </Togglable>
   )
 
   const handleLikesOf = (id) => {
-    const blog = blogs.find(n => n.id === id)
+    const blog = blogs.find(b => b.id === id)
+
     blog.likes+=1
     const changedBlog = { ...blog, likes: blog.likes }
-  
+
     blogService
-      .update(id, changedBlog)
-      .then(returnedBlog => {
-        setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
-      })
+    .update(id, {
+      title:changedBlog.title,
+      author: changedBlog.author,
+      url:changedBlog.url,
+      likes: changedBlog.likes,
+      user: changedBlog.user.id  
+    })
+    .then(returnedBlog => {
+      setBlogs(blogs.map(blog => blog.id !== id ? blog : returnedBlog))
+    })
       .catch(error => {
-        setMessage(
-          `Error occured. Blog '${blog.title}' likes cannot be changed.`
-        )
+        setMessage({
+          text: `Error occured. Blog '${blog.title}' likes cannot be changed.`,
+          type: "success"
+        })
         setTimeout(() => {
           setMessage(null)
         }, 5000)     
       })
+  }
+
+  const removeTheBlog = (id) => {
+    const blog = blogs.find(b => b.id === id)
+
+    if (window.confirm(`Remove blog '${blog.title}' by '${blog.author}'?`)) {
+      blogService
+        .remove(id)
+        .then(() => {
+          setMessage({ 
+            text: `Deleted '${blog.title}' by '${blog.author}'`, 
+            type: 'success'
+          })
+          setBlogs(blogs.filter(p => p.id !== id).sort((a, b) => b.likes - a.likes))
+        })
+        .catch(error => {
+          setMessage({ 
+            text: `${error.response.data.error}`, 
+            type: 'error' 
+          })
+        })
+    }
   }
 
   return (
@@ -160,19 +194,21 @@ const App = () => {
         <div>
           <h2>blogs</h2>
           <Notification message={message} />
-          <p>
+          <div>
             {user.name} logged-in <button 
             onClick = { () => logoutFunction()}>logout</button>
-          </p>
-          <p>
+          </div>
+          <div>
             {blogForm()}
-          </p>
+          </div>
           <div>
             { blogs.map(blog =>
               <Blog 
                 key={blog.id} 
                 blog={blog}
-                handleLikes = {() => handleLikesOf(blog.id)} />
+                user={user}
+                handleLikes = {() => handleLikesOf(blog.id)}
+                removeBlog = {() => removeTheBlog(blog.id)} />
             )}
           </div>
         </div>
