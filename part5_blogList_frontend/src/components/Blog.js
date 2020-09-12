@@ -19,14 +19,14 @@ const Blog = (props) => {
   }
 
   return (
-    <div>
-      <div style={hideComponent}>
+    <div className = "renderBlog">
+      <div className = "blogTitleAuthor" style={hideComponent}>
         <div style = {blogStyle}>
           {props.blog.title} {props.blog.author}
           <button onClick={toggleVisibility}> view </button>
         </div>
       </div>
-      <div style={showComponent}>
+      <div  className = "blogDetails" style={showComponent}>
         <div style = {blogStyle}>
           <div>{props.blog.title} {props.blog.author}
             <button onClick={toggleVisibility}> hide </button>
