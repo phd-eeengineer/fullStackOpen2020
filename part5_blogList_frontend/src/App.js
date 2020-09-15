@@ -95,7 +95,7 @@ const App = () => {
     </div>          
   )
 
-  const addBlog = (blogObject) => {
+  const buildBlog = (blogObject) => {
     blogFormRef.current.toggleVisibility()
 
     blogService
@@ -136,7 +136,7 @@ const App = () => {
 
   const blogForm = () => (
     <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-      <BlogForm createBlog={addBlog}/>
+      <BlogForm createBlog={buildBlog}/>
     </Togglable>
   )
 
