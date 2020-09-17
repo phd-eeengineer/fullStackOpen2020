@@ -115,6 +115,23 @@ describe('Blog app', function() {
               cy.root().find('.renderBlog').first().find('#view-button').click()
               cy.root().find('.renderBlog').first().find('#remove-button').should('not.exist')
             })
+
+            it.only('the blogs are ordered according to like values', function() {           
+              cy.root().find('.renderBlog').last().contains('blog title 3')
+              cy.root().find('.renderBlog').last().find('#view-button').click()
+              cy.root().find('.renderBlog').last().find('#like-button').click()
+              cy.root().find('.renderBlog').first().contains('blog title 3')
+              cy.root().find('.renderBlog').first().find('#like-button').click()
+              cy.root().find('.renderBlog').first().contains('blog title 3')
+
+              // cy.wait(1000)
+              
+              // cy.root().find('.renderBlog').last().contains('blog title 2')
+              // cy.root().find('.renderBlog').last().find('#view-button').click()
+              // cy.root().find('.renderBlog').last().find('#like-button').click()
+              // cy.root().find('.renderBlog:second').contains('blog title 2')
+           
+            })
           })
         })
 
