@@ -1,3 +1,5 @@
+const { checkPropTypes } = require("prop-types")
+
 describe('Blog app', function() {
 
     beforeEach(function() {
@@ -65,6 +67,58 @@ describe('Blog app', function() {
 
           cy.contains('Test title Test Cypress')
         })
+
+        // Ex. 5.20
+        describe.only('and a blog exists', function () {
+          beforeEach(function () {
+            cy.createBlog({ title: 'Test title', author: 'Test Cypress', url: 'www.cypress.com' })
+          })
+          
+          it('A blog can be liked', function() {           
+            cy.root().find('.renderBlog').get('#view-button').click()
+            cy.root().find('.blogLikes').contains('0')
+            cy.root().find('.blogLikes').get('#like-button').click()
+            cy.root().find('.blogLikes').contains('1')
+          })
+
+          describe.only('many blogs exist', function () {
+            beforeEach(function () {
+              const user2 = {
+                name: 'Test User 2',
+                username: 'test2',
+                password: 'test2'
+              }          
+              cy.request('POST', 'http://localhost:3001/api/users/', user2)
+
+              const user3 = {
+                name: 'Test User 3',
+                username: 'test3',
+                password: 'test3'
+              }          
+              cy.request('POST', 'http://localhost:3001/api/users/', user3)
+
+              cy.createBlog({ title: 'blog title 1', author: 'user 1', url: 'www.first-user.com' })
+              cy.login({ username: 'test2', password: 'test2'})
+              cy.createBlog({ title: 'blog title 2', author: 'user 2', url: 'www.second-user.com' })
+              cy.login({ username: 'test3', password: 'test3'})
+              cy.createBlog({ title: 'blog title 3', author: 'user 3', url: 'www.third-user.com' })
+            })
+            
+            // Ex 5.21
+            it('the user who created a blog can delete it', function() {           
+              cy.root().find('.renderBlog').last().find('#view-button').click()
+              cy.root().find('.renderBlog').last().get('#remove-button').click()
+              cy.root().find('.renderBlog').last().contains('blog title 3').should('not.exist')
+            })
+
+            it('the user can not delete the others blog', function() {           
+              cy.root().find('.renderBlog').first().find('#view-button').click()
+              cy.root().find('.renderBlog').first().find('#remove-button').should('not.exist')
+            })
+          })
+        })
+
+        
       })
 
 })

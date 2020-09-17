@@ -32,7 +32,7 @@ const Blog = ({ blog, user, handleLikes, removeBlog}) => {
             <button id="hide-button" onClick={toggleVisibility}> hide </button>
           </div>
           <div>{ blog.url }</div>
-          <div>likes { blog.likes }
+          <div className = "blogLikes"> likes: { blog.likes }
             <button id="like-button" onClick={ handleLikes }> like </button>
           </div>
           <div>{ blog.user.name }</div>
